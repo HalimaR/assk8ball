@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,13 +18,12 @@ public class ask8ballController {
     @Autowired
     private RedisService service;
 
-    // 
     @GetMapping("/addquestion")
     public String index(){
         return "redirect:/addquestion";
     }
     @PostMapping("/addquestion")
-    public String question(@RequestParam("question") String question){
+    public String question(@RequestParam("question") String question, Model model){
         Random rand = new Random();
         String[] answers = new String[]{"It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.","Most likely.", "Outlook good.", "Yes."};
         
@@ -44,6 +44,7 @@ public class ask8ballController {
             this.service.setKey("question:" + question + ":" + answer,"");
             System.out.println("vraag word toegevoegd");
         }
+        model.addAttribute("answer", answer);
         return "redirect:/addquestion";
     }
 }
