@@ -18,9 +18,14 @@ public class ask8ballController {
     @Autowired
     private RedisService service;
 
-    @GetMapping("/addquestion")
-    public String index(){
+    @GetMapping("/")
+    public String index() {
         return "redirect:/addquestion";
+    }
+
+    @GetMapping("/addquestion")
+    public String getquestion(){
+        return "/addquestion";
     }
     @PostMapping("/addquestion")
     public String question(@RequestParam("question") String question, Model model){
@@ -32,19 +37,25 @@ public class ask8ballController {
         String answer = "";
         for (String a : this.service.keys("question:" + question + ":*")) {
             questions.add(this.service.getKey(a));
+            System.out.println( a);
         }
         if (questions.contains(zelfdevraag)) { // countains loopt door u array
-            System.out.println("oeps die bestaat wel");
+            System.out.println("oeps die bestaat wel "+question);
         }else{
-            int max = rand.nextInt(answers.length-1);
-            int min =0;
-            int number = max - min+1;
-            int rnd = (int)((Math.random()*number));
-            answer = answers[(int) Math.floor(rnd)];
-            this.service.setKey("question:" + question + ":" + answer,"");
-            System.out.println("vraag word toegevoegd");
+            if(question == ""){
+                System.out.println("oeps");
+            }else{
+                int max = rand.nextInt(answers.length - 1);
+                int min = 0;
+                int number = max - min + 1;
+                int rnd = (int) ((Math.random() * number));
+                answer = answers[(int) Math.floor(rnd)];
+                this.service.setKey("question:" + question + ":" + answer, answer);
+                System.out.println("vraag word toegevoegd " + answer);
+            }
+            model.addAttribute("answer", answer);
         }
-        model.addAttribute("answer", answer);
+            model.addAttribute("answer", answer);
         return "redirect:/addquestion";
     }
 }
