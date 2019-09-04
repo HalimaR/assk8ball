@@ -3,6 +3,8 @@ package edu.ap.spring.ask8ball.demo.controller;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,12 +33,15 @@ public class ask8ballController {
     public String question(@RequestParam("question") String question, Model model){
         Random rand = new Random();
         String[] answers = new String[]{"It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.","Most likely.", "Outlook good.", "Yes."};
-        
+        //Set<String> keys = service.keys("question:*");
         ArrayList<String> questions = new ArrayList<>();
         String zelfdevraag = question;
         String answer = "";
-        for (String a : this.service.keys("question:" + question + ":*")) {
+        
+        for (String a : this.service.keys("question:*")) {
+            //String[] parsts = a.split(":");
             questions.add(this.service.getKey(a));
+            
             System.out.println( a);
         }
         if (questions.contains(zelfdevraag)) { // countains loopt door u array
